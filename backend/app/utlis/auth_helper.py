@@ -1,9 +1,7 @@
 import jwt
 import logging
 from datetime import datetime, timedelta
-
-JWT_SECRET = 'abcdefghkond495769w0@q231!@#!@$@!$%'
-ALGORITHM = 'HS256'
+from courses.config_settings import settings
 
 def encode_jwt(user_id, role):
     try:
@@ -13,7 +11,7 @@ def encode_jwt(user_id, role):
             'expiry': (datetime.utcnow() + timedelta(hours=24)).timestamp(),
             'iat': datetime.utcnow().timestamp()
         }
-        encoded_token = jwt.encode(payload=payload, key=JWT_SECRET, algorithm=ALGORITHM)
+        encoded_token = jwt.encode(payload=payload, key=settings.get('JWT_SECRET'), algorithm=settings.get('JWT_ALGORITHM'))
         return encoded_token
     except Exception as e:
         logging.error("Unable to encode jwt token.")

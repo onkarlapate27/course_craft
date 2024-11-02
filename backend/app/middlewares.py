@@ -1,7 +1,7 @@
 import jwt
 from django.http import JsonResponse
 from .models.user import User
-from ..courses.config_settings import settings
+from courses.config_settings import settings
 
 def auth_middleware(get_response):
     def middleware(request):
@@ -11,6 +11,7 @@ def auth_middleware(get_response):
                 payload = jwt.decode(token, settings.get('JWT_SECRET'), algorithms=[settings.get('JWT_ALGORITHM')])
                 user = User.objects.get(id=payload['user_id'])
                 request.user = user
+                request.role = payload['role']
             except jwt.ExpiredSignatureError:
                 return JsonResponse({"error": "Token has expired"}, status=401)
             except jwt.InvalidTokenError:

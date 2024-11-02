@@ -43,6 +43,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'app.middlewares.auth_middleware'
 ]
 
 ROOT_URLCONF = 'courses.urls'

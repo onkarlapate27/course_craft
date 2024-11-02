@@ -1,7 +1,7 @@
 import logging, json
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password, check_password
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_http_methods
 from django.core.validators import validate_email
 from django.forms.models import model_to_dict
 from ..models.user import User
@@ -9,7 +9,7 @@ from ..utlis.auth_helper import validate_password, encode_jwt
 from ..constants import UserRoles
 
 
-@require_POST
+@require_http_methods(["POST"])
 def register(request):
     try:
         request_body = json.loads(request.body)
@@ -48,7 +48,7 @@ def register(request):
         return JsonResponse({"message": "Unable to register. Please contact Administrator."}, status=201)
 
 
-@require_POST
+@require_http_methods(["POST"])
 def login(request):
     try:
         request_body = json.loads(request.body)

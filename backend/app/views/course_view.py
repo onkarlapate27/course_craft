@@ -22,8 +22,14 @@ def get_courses(request):
         courses_list = []
 
         for course in courses:
-            print("course - ", course)
-            courses_list.append(course)
+            course_data = {
+                "id": course.id,
+                "title": course.title,
+                "description": course.description,
+                "created_at": course.created_at,
+                "updated_at": course.updated_at,
+            }
+            courses_list.append(course_data)
 
         return JsonResponse({"message": "Courses listed successfully.", "data":courses_list})
 

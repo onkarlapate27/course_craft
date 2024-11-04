@@ -8,4 +8,6 @@ urlpatterns = [
     path('courses/create', view=course_view.create_course, name='create-courses'),
     path('courses/<int:course_id>', view=course_view.update_course, name='update-course'),
     path('courses/delete/<int:course_id>', view=course_view.delete_course, name='delete-course'),
+    path('courses/purchase', view=course_view.purchase_course, name='purchase-course'),
+    path('courses/list-purchased', view=course_view.get_purchased_courses, name='list-purchased-courses'),
 ]

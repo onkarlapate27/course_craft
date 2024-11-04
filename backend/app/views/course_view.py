@@ -1,4 +1,3 @@
-from datetime import datetime
 import logging, json
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
@@ -88,7 +87,7 @@ def update_course(request, course_id):
         return JsonResponse({"message": "Course updated successfully."})
 
     except Exception as e:
-        logging.error(f"Error in updating new course. \n {e}")
+        logging.error(f"Error in updating course. \n {e}")
         return JsonResponse({"error": "Unable to update course. Please contact administrator"}, status=400)
     
 
@@ -109,5 +108,49 @@ def delete_course(request, course_id):
         return JsonResponse({"message": "Course deleted successfully."})
 
     except Exception as e:
-        logging.error(f"Error in deleting new course. \n {e}")
+        logging.error(f"Error in deleting course. \n {e}")
         return JsonResponse({"error": "Unable to delete course. Please contact administrator"}, status=400)
+
+
+@auth_decorator
+@require_http_methods(["POST"])
+def purchase_course(request):
+    try:
+        data = json.loads(request.body)
+        course_id = data.get('course_id')
+
+        course = Course.objects.filter(id=course_id).first()
+        if not course:
+            return JsonResponse({"error": "Course does not exists."}, status=400)
+        
+        user = request.user
+        user.courses_enrolled.add(course)
+
+        return JsonResponse({"message": "Course purchased successfully."})
+
+    except Exception as e:
+        logging.error(f"Error in purchasing course. \n {e}")
+        return JsonResponse({"error": "Unable to purchase course. Please contact administrator"}, status=400)
+    
+
+@auth_decorator
+@require_http_methods(["GET"])
+def get_purchased_courses(request):
+    try:
+        user = request.user
+        purchased_courses = user.courses_enrolled.all()
+        purchased_courses_list = []
+
+        for course in purchased_courses:
+            course_obj = {
+                "id": course.id,
+                "title": course.title,
+                "description": course.description,
+            }
+            purchased_courses_list.append(course_obj)
+
+        return JsonResponse({"message": "Purchased courses listed successfully.", "data": purchased_courses_list})
+
+    except Exception as e:
+        logging.error(f"Error in listing purchased courses. \n {e}")
+        return JsonResponse({"error": "Unable to get purchased courses. Please contact administrator"}, status=400)
